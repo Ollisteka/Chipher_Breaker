@@ -26,16 +26,8 @@ def main():
         'fn',
         metavar='FILE',
         nargs='*',
-        type=argparse.FileType('r'),
         default=sys.stdin,
         help='name of the file with text')
-    source.add_argument(
-        '--folder',
-        type=str,
-        nargs='?',
-        default=None,
-        help='name of the folder with text files')
-
     parser.add_argument(
         '-o',
         '--output',
@@ -62,13 +54,14 @@ def main():
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
-    if args.folder:
-        origin_path = os.path.join(os.getcwd(), args.output)
-        os.chdir(args.folder)
-        handle_many_files(args, os.listdir(args.folder))
-        os.replace(os.path.join(os.getcwd(), args.output), origin_path)
-    elif len(args.fn) == 1:
-        handle_one_file(args, args.fn[0])
+    if len(args.fn) == 1:
+        if os.path.isdir(args.fn[0]):
+            origin_path = os.path.join(os.getcwd(), args.output)
+            os.chdir(args.fn[0])
+            handle_many_files(args, os.listdir(args.fn[0]))
+            os.replace(os.path.join(os.getcwd(), args.output), origin_path)
+        else:
+            handle_one_file(args, args.fn[0])
     elif not args.output:
         print(
             "Error: an output file must be specified, to let numerous files to be handled")
