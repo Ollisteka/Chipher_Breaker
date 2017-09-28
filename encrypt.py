@@ -102,5 +102,6 @@ def main():
     else:
         sys.stdout.write(result)
 
+
 if __name__ == '__main__':
     sys.exit(main())
