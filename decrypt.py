@@ -16,7 +16,7 @@ NGRAMMS = "ngramms"
 
 def main():
     parser = argparse.ArgumentParser(
-        usage='{} [OPTIONS] STAT ALPHABET FILE'.format(
+        usage='{} [OPTIONS] ALPHABET STAT FILE'.format(
             os.path.basename(
                 sys.argv[0])),
         description='Decode text, encrypted in substitution cipher')

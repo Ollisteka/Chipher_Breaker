@@ -46,5 +46,5 @@ DECRYPTOR
 Справка по запуску:
     Windows: python decrypt.py --help
     Linux: python3 decrypt.py --help
-Пример запуска: python decrypt.py A-Za-z input.txt
+Пример запуска: python decrypt.py A-Za-z stat.txt input.txt
 ----
