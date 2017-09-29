@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import sys
+# coding=utf-8
+import json
 import os
 import re
-import json
-from itertools import groupby
+import sys
 from copy import deepcopy
+from itertools import groupby
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
@@ -142,9 +143,9 @@ def make_words_list(words, count=100):
     :return:
     """
     result = []
-    a = groupby(sorted(words.keys(), key=lambda x: (len(x), words[x]), reverse=True),
-                lambda x: len(x))
-    for key, group in a:
+    sorted_groups = groupby(sorted(words.keys(), key=lambda x: (len(x), words[x]), reverse=True),
+                            lambda x: len(x))
+    for _, group in sorted_groups:
         result.extend(list(group)[:count])
     return result
 
@@ -156,12 +157,16 @@ def process_statistic(filename, encoding):
     :param encoding:
     :return:
     """
-    with open(filename, "r", encoding=encoding) as f:
-        sample = json.loads(f.read())
+    with open(filename, "r", encoding=encoding) as file:
+        sample = json.loads(file.read())
     return make_words_masks(sample[WORDS].keys())
 
 
 class SubstitutionHacker:
+    """
+    This class can hack and decode encrypted text or file
+    """
+
     def __init__(self, alphabet, stat_fn, encoding, code_fn=None, code_text=None, top=15000):
         self.alphabet = alphabet
         self.word_patterns = process_statistic(stat_fn, encoding)  # original non encrypted words masks
@@ -172,7 +177,8 @@ class SubstitutionHacker:
         else:
             raise Exception("You must specify file name or the text itself")
         self.code_count_dict = code_text_info.find_info(top).make_count_dict()
-        self.code_patterns = make_words_masks(make_words_list(self.code_count_dict[WORDS], top))  # encrypted words masks
+        self.code_patterns = make_words_masks(
+            make_words_list(self.code_count_dict[WORDS], top))  # encrypted words masks
         self.temp_subst = make_blank_substitution(alphabet)
         self.key = make_blank_substitution(alphabet)
 

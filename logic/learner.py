@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import sys
-import re
+# coding=utf-8
 import json
-import tempfile
+import re
 import string
+import sys
+import tempfile
 from collections import Counter, defaultdict
 
 LETTERS = "letters"
@@ -69,8 +70,6 @@ class CountInfo:
         try:
             with open(filename, "r", encoding=encoding) as f:
                 prev_data = json.loads(f.read())
-            # файл, используя который хотим обновить данные, на другом языке
-            # Стоит ли сделать свой эксэпшн, чтобы кидать в таком случае?
             if alphabet.match(list(prev_data[LETTERS].keys())[0]) is None:
                 return
             else:
@@ -97,6 +96,7 @@ class TextInfo:
 
     def __init__(self, alphabet, encoding, input_filename=None, input_text=None):
         try:
+            # noinspection PyProtectedMember
             if isinstance(input_filename, tempfile._TemporaryFileWrapper):
                 self.is_tmpfile = True
                 raise AttributeError
@@ -148,7 +148,7 @@ class TextInfo:
         :type word: str
         :return:
         """
-        for n in range(2, len(word)+1):
+        for n in range(2, len(word) + 1):
             ngramms = word_to_ngramms(word, n)
             for ngramm in ngramms:
                 self.ngramms[str(n)][ngramm] += 1

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+# coding=utf-8
+import argparse
 import os
 import sys
-import argparse
 from pprint import pprint
 
 LETTERS = "letters"
@@ -54,7 +55,7 @@ def main():
 
     args = parser.parse_args()
     if args.fn.name == '<stdin>':
-        handle_one_file(args, text=sys.stdin)
+        handle_one_object(args, text=sys.stdin)
     elif len(args.fn) == 1:
         if os.path.isdir(args.fn[0]):
             origin_path = os.path.join(os.getcwd(), args.output)
@@ -62,7 +63,7 @@ def main():
             handle_many_files(args, os.listdir(args.fn[0]))
             os.replace(os.path.join(os.getcwd(), args.output), origin_path)
         else:
-            handle_one_file(args, file_name=args.fn[0])
+            handle_one_object(args, file_name=args.fn[0])
     elif not args.output:
         print(
             "Error: an output file must be specified, to let numerous files to be handled")
@@ -72,7 +73,12 @@ def main():
 
 
 def handle_many_files(args, files):
-    handle_one_file(args, files[0])
+    """
+    Process a list of files
+    :param args:
+    :param files: a list of files' names
+    """
+    handle_one_object(args, files[0])
     for i in range(1, len(files)):
         text_info = TextInfo(args.alph, args.encoding, input_filename=files[i])
         count_info = text_info.find_info(args.top)
@@ -85,7 +91,13 @@ def handle_many_files(args, files):
         write_json_in_file(args.output, updated_dict, args.encoding)
 
 
-def handle_one_file(args, file_name=None, text=None):
+def handle_one_object(args, file_name=None, text=None):
+    """
+    Process one file at a time, or a given piece of text
+    :param args:
+    :param file_name:
+    :param text:
+    """
     if file_name:
         text_info = TextInfo(args.alph, args.encoding, input_filename=file_name)
     elif text:

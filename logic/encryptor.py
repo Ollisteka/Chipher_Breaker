@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+# coding=utf-8
+import json
 import sys
 import tempfile
-import json
 from copy import copy
 from random import shuffle
 
@@ -76,6 +77,7 @@ def code_text_from_file(filename, encoding, substitution, alphabet):
     :type alphabet: __Regex
     :return:
     """
+    # noinspection PyProtectedMember
     if isinstance(filename, tempfile._TemporaryFileWrapper):
         with filename as f:
             f.seek(0)

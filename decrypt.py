@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import sys
+# coding=utf-8
 import argparse
 import os
+import sys
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
@@ -98,10 +99,15 @@ def main():
 
 
 def stdin_to_text():
+    """
+    Covert stdin text to a normal string, so it could be used many times.
+    :return:
+    """
     result = ''
     for line in sys.stdin:
         result += line
     return result
+
 
 if __name__ == '__main__':
     sys.exit(main())
