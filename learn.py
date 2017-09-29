@@ -99,7 +99,10 @@ def handle_one_object(args, file_name=None, text=None):
     :param text:
     """
     if file_name:
-        text_info = TextInfo(args.alph, args.encoding, input_filename=file_name)
+        text_info = TextInfo(
+            args.alph,
+            args.encoding,
+            input_filename=file_name)
     elif text:
         text_info = TextInfo(args.alph, args.encoding, input_text=text)
     count_info = text_info.find_info(args.top)
