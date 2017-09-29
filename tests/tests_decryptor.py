@@ -25,9 +25,9 @@ class MyTestCase(unittest.TestCase):
     def test_make_words_masks(self):
         self.assertEqual(d.make_words_masks(
             ["lazy", 'summer', "abcdef", "qwerty"]),
-                         {"0123": ["lazy"],
-                          "012234": ["summer"],
-                          "012345": ["abcdef", "qwerty"]})
+            {"0123": ["lazy"],
+             "012234": ["summer"],
+             "012345": ["abcdef", "qwerty"]})
 
     def test_get_blank_letter_mapping(self):
         self.assertDictEqual(d.make_blank_substitution("A-Za-z"),
