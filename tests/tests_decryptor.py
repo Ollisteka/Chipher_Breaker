@@ -23,7 +23,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(mask_two, d.make_mask(word_two))
 
     def test_make_words_masks(self):
-        self.assertEqual(d.make_words_masks(["lazy", 'summer', "abcdef", "qwerty"]),
+        self.assertEqual(d.make_words_masks(
+            ["lazy", 'summer', "abcdef", "qwerty"]),
                          {"0123": ["lazy"],
                           "012234": ["summer"],
                           "012345": ["abcdef", "qwerty"]})
@@ -305,12 +306,31 @@ class MyTestCase(unittest.TestCase):
                  'x': {'a'},
                  'y': {'b'},
                  'z': {'c'}}
-        self.assertDictEqual(subst, d.expand_substitution(d.make_blank_substitution("A-Za-z"), coded, word))
-
+        self.assertDictEqual(subst, d.expand_substitution(
+            d.make_blank_substitution("A-Za-z"), coded, word))
 
     def test_regex(self):
         regex = re.compile('[A-Za-z]')
         self.assertEqual(d.regex("A-Za-z"), regex)
+
+    def test_process_stat(self):
+        stat = b"""{"words": {"hello": 1, "my": 1, "friend": 1, "no": 1}}"""
+        temp = make_tmp(stat)
+        processed = d.process_statistic(temp, 'utf-8')
+        expected = {'01223': ["hello"], '01': ['my', 'no'], '012345': [
+            'friend']}
+        self.assertDictEqual(expected, processed)
+
+
+def make_tmp(text):
+    """
+    Make a temp file from a given text.
+    :param text:
+    :return:
+    """
+    tmp = tempfile.NamedTemporaryFile(delete=False)
+    tmp.write(text)
+    return tmp
 
 
 if __name__ == '__main__':
