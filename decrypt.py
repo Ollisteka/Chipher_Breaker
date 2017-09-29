@@ -67,27 +67,41 @@ def main():
     if not args.alph:
         sys.exit("Error: alphabet must be specified")
 
-    hacker = SubstitutionHacker(
-        args.alph,
-        args.stat,
-        args.encoding,
-        args.fn,
-        args.top)
-    key = hacker.hack()
     if args.fn.name == '<stdin>':
-        decoded_text = hacker.decode_stdin()
+        text = stdin_to_text()
+        hacker = SubstitutionHacker(
+            args.alph,
+            args.stat,
+            args.encoding,
+            code_text=text,
+            top=args.top)
+        key = hacker.hack()
+        decoded_text = hacker.decode_text(text)
     else:
+        hacker = SubstitutionHacker(
+            args.alph,
+            args.stat,
+            args.encoding,
+            code_fn=args.fn.name,
+            top=args.top)
+        key = hacker.hack()
         decoded_text = hacker.decode_file(args.fn.name, args.encoding)
 
     if args.output:
         with open(args.output, 'w', encoding=args.encoding) as file:
             file.write(decoded_text)
     else:
-        sys.stdout.write(decoded_text)
+        print(decoded_text)
 
     if args.substitution:
         write_json_in_file(args.substitution, key, args.encoding)
 
+
+def stdin_to_text():
+    result = ''
+    for line in sys.stdin:
+        result += line
+    return result
 
 if __name__ == '__main__':
     sys.exit(main())

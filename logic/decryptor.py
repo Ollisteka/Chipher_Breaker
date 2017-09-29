@@ -9,7 +9,7 @@ from copy import deepcopy
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
-from logic.encryptor import code_stdin, code_text_from_file, make_alphabet, generate_substitution
+from logic.encryptor import code_stdin, code_text_from_file, make_alphabet, generate_substitution, code
 from logic.learner import TextInfo
 
 LETTERS = "letters"
@@ -162,10 +162,15 @@ def process_statistic(filename, encoding):
 
 
 class SubstitutionHacker:
-    def __init__(self, alphabet, stat_fn, encoding, code_fn, top=15000):
+    def __init__(self, alphabet, stat_fn, encoding, code_fn=None, code_text=None, top=15000):
         self.alphabet = alphabet
         self.word_patterns = process_statistic(stat_fn, encoding)  # original non encrypted words masks
-        code_text_info = TextInfo(alphabet, encoding, input_filename=code_fn)
+        if code_fn:
+            code_text_info = TextInfo(alphabet, encoding, input_filename=code_fn)
+        elif code_text:
+            code_text_info = TextInfo(alphabet, encoding, input_text=code_text)
+        else:
+            raise Exception("You must specify file name or the text itself")
         self.code_count_dict = code_text_info.find_info(top).make_count_dict()
         self.code_patterns = make_words_masks(make_words_list(self.code_count_dict[WORDS], top))  # encrypted words masks
         self.temp_subst = make_blank_substitution(alphabet)
@@ -203,6 +208,14 @@ class SubstitutionHacker:
         :return:
         """
         return code_stdin(self.key, regex(self.alphabet))
+
+    def decode_text(self, text):
+        """
+        Decode given text
+        :param text:
+        :return:
+        """
+        return code(text, self.key, regex(self.alphabet))
 
 
 def regex(alphabet):
