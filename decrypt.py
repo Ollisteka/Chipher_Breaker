@@ -68,7 +68,7 @@ def main():
     if not args.alph:
         sys.exit("Error: alphabet must be specified")
 
-    if args.fn.name == '<stdin>':
+    if not isinstance(args.fn, list) and args.fn.name == '<stdin>':
         text = stdin_to_text()
         hacker = SubstitutionHacker(
             args.alph,

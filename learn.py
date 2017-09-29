@@ -27,7 +27,7 @@ def main():
         metavar='FILE',
         nargs='*',
         default=sys.stdin,
-        help='name of the file with text')
+        help='name of the file with text or a full path to a folder')
     parser.add_argument(
         '-o',
         '--output',
@@ -54,7 +54,7 @@ def main():
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
-    if args.fn.name == '<stdin>':
+    if not isinstance(args.fn, list) and args.fn.name == '<stdin>':
         handle_one_object(args, text=sys.stdin)
     elif len(args.fn) == 1:
         if os.path.isdir(args.fn[0]):
