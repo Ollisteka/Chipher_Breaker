@@ -65,8 +65,8 @@ def main():
         else:
             handle_one_object(args, file_name=args.fn[0])
     elif not args.output:
-        print(
-            "Error: an output file must be specified, to let numerous files to be handled")
+        print("Error: an output file must be specified, to let numerous "
+              "files to be handled")
         sys.exit(2)
     else:
         handle_many_files(args, args.fn)

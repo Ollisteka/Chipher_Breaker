@@ -11,7 +11,8 @@ from itertools import groupby
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
-from logic.encryptor import code_stdin, code_text_from_file, make_alphabet, generate_substitution, code
+from logic.encryptor import code_stdin, code_text_from_file, \
+    make_alphabet, generate_substitution, code
 from logic.learner import TextInfo
 
 LETTERS = "letters"

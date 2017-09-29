@@ -20,7 +20,8 @@ def read_json_file(filename, encoding):
 
 def generate_alphabet_list(start, end):
     """
-    Function makes a list, containing all the letters from start to end included.
+    Function makes a list, containing all the letters from start
+    to end included.
     :type end: str
     :type start: str
     :return:
@@ -99,7 +100,8 @@ def code_stdin(substitution, alphabet):
 
 def code(text, substitution, alphabet):
     """
-    The function encrypts the text, assigning each letter a new one from the substitution
+    The function encrypts the text, assigning each letter
+    a new one from the substitution
     :type text: str or Text.IOWrapper[str]
     :type substitution: dict
     :type alphabet: __Regex

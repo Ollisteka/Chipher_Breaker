@@ -36,7 +36,8 @@ class CountInfo:
 
     def make_count_dict(self):
         """
-        Make dictionary with information about how many letters appeared in the text
+        Make dictionary with information about how many letters
+        appeared in the text
         and most popular words
 
         :return:
@@ -57,7 +58,8 @@ class CountInfo:
 
     def update_count_info(self, filename, alphabet, top_words, encoding):
         """
-        Try update information in current CountInfo, using information from file
+        Try update information in current CountInfo, using
+        information from file
         :type encoding: str
         :type top_words: int
         :type filename: str
@@ -78,7 +80,8 @@ class CountInfo:
                 old_ngramms = {}
                 for n in prev_data[NGRAMMS]:
                     old_ngramms[n] = Counter(prev_data[NGRAMMS][n])
-                # old_ngramms = {n: Counter(v) for (n, v) in prev_data[NGRAMMS]}
+                # old_ngramms = {n: Counter(v) for (n, v) in prev_data[
+                # NGRAMMS]}
                 for n in old_ngramms:
                     self.ngramms[n] += old_ngramms[n]
 
@@ -149,7 +152,8 @@ class TextInfo:
 
     def make_ngramms(self, word):
         """
-        Function finds all the ngramms from the word and updates information about them in self.
+        Function finds all the ngramms from the word and updates information
+        about them in self.
         :type word: str
         :return:
         """
@@ -171,7 +175,8 @@ class TextInfo:
                 if self.alph.match(char) is not None:
                     word += char.lower()
                     self.letters[char.lower()] += 1
-                if char in string.whitespace or char in string.punctuation or char == '—':
+                if char in string.whitespace or char in string.punctuation \
+                        or char == '—':
                     if word != '':
                         self.words[word] += 1
                         self.make_ngramms(word)
@@ -186,7 +191,8 @@ def word_to_ngramms(text, n):
 
 def count_frequencies(dictionary):
     """
-    Function sums up dictionary's values, and based on that counts the frequency for each key.
+    Function sums up dictionary's values, and based on that
+    counts the frequency for each key.
     :param dictionary:
     :return:
     """
