@@ -21,8 +21,7 @@ def main():
         'alph',
         metavar='alphabet',
         help='language, in which text is written (for example: A-Za-z)')
-    source = parser.add_mutually_exclusive_group(required=True)
-    source.add_argument(
+    parser.add_argument(
         'fn',
         metavar='FILE',
         nargs='*',
@@ -54,14 +53,16 @@ def main():
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
-    if len(args.fn) == 1:
+    if args.fn.name == '<stdin>':
+        handle_one_file(args, text=sys.stdin)
+    elif len(args.fn) == 1:
         if os.path.isdir(args.fn[0]):
             origin_path = os.path.join(os.getcwd(), args.output)
             os.chdir(args.fn[0])
             handle_many_files(args, os.listdir(args.fn[0]))
             os.replace(os.path.join(os.getcwd(), args.output), origin_path)
         else:
-            handle_one_file(args, args.fn[0])
+            handle_one_file(args, file_name=args.fn[0])
     elif not args.output:
         print(
             "Error: an output file must be specified, to let numerous files to be handled")
@@ -84,8 +85,11 @@ def handle_many_files(args, files):
         write_json_in_file(args.output, updated_dict, args.encoding)
 
 
-def handle_one_file(args, file):
-    text_info = TextInfo(args.alph, args.encoding, input_filename=file)
+def handle_one_file(args, file_name=None, text=None):
+    if file_name:
+        text_info = TextInfo(args.alph, args.encoding, input_filename=file_name)
+    elif text:
+        text_info = TextInfo(args.alph, args.encoding, input_text=text)
     count_info = text_info.find_info(args.top)
     if args.update_fn:
         count_info.update_count_info(
