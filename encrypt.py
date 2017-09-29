@@ -21,7 +21,7 @@ def main():
         description='Encode text using substitution cipher',
         epilog="Made by Zhukova Olga, FT-202")
 
-    subst_group = parser.add_mutually_exclusive_group(required=True)
+    subst_group = parser.add_mutually_exclusive_group()
 
     subst_group.add_argument(
         '-s',
@@ -85,6 +85,8 @@ def main():
                 args.encoding))
     elif args.generate:
         subst = generate_substitution(args.alph)
+    else:
+        subst = generate_substitution(args.alph)
 
     alph = re.compile('[' + args.alph + ']')
     if not args.fn:
@@ -93,7 +95,8 @@ def main():
         result = code_text_from_file(args.fn.name, args.encoding, subst, alph)
 
     # print("Saving substitution to '{}{}'...".format(os.path.sep, SUBST_FILE))
-    write_json_in_file(args.generate, subst, args.encoding)
+    if args.generate:
+        write_json_in_file(args.generate, subst, args.encoding)
     # print("DONE")
 
     if args.output:
