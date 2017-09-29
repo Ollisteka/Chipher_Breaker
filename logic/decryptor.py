@@ -4,6 +4,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 from copy import deepcopy
 from itertools import groupby
 
@@ -143,8 +144,14 @@ def make_words_list(words, count=100):
     :return:
     """
     result = []
-    sorted_groups = groupby(sorted(words.keys(), key=lambda x: (len(x), words[x]), reverse=True),
-                            lambda x: len(x))
+    sorted_groups = groupby(
+        sorted(
+            words.keys(),
+            key=lambda x: (
+                len(x),
+                words[x]),
+            reverse=True),
+        lambda x: len(x))
     for _, group in sorted_groups:
         result.extend(list(group)[:count])
     return result
@@ -157,8 +164,15 @@ def process_statistic(filename, encoding):
     :param encoding:
     :return:
     """
-    with open(filename, "r", encoding=encoding) as file:
-        sample = json.loads(file.read())
+    # noinspection PyProtectedMember
+    if isinstance(filename, tempfile._TemporaryFileWrapper):
+        with filename as f:
+            f.seek(0)
+            text = f.read().decode(encoding)
+            sample = json.loads(text)
+    else:
+        with open(filename, "r", encoding=encoding) as file:
+            sample = json.loads(file.read())
     return make_words_masks(sample[WORDS].keys())
 
 
@@ -167,18 +181,29 @@ class SubstitutionHacker:
     This class can hack and decode encrypted text or file
     """
 
-    def __init__(self, alphabet, stat_fn, encoding, code_fn=None, code_text=None, top=15000):
+    def __init__(
+            self,
+            alphabet,
+            stat_fn,
+            encoding,
+            code_fn=None,
+            code_text=None,
+            top=15000):
         self.alphabet = alphabet
-        self.word_patterns = process_statistic(stat_fn, encoding)  # original non encrypted words masks
+        self.word_patterns = process_statistic(
+            stat_fn, encoding)  # original non encrypted words masks
         if code_fn:
-            code_text_info = TextInfo(alphabet, encoding, input_filename=code_fn)
+            code_text_info = TextInfo(
+                alphabet, encoding, input_filename=code_fn)
         elif code_text:
             code_text_info = TextInfo(alphabet, encoding, input_text=code_text)
         else:
             raise Exception("You must specify file name or the text itself")
         self.code_count_dict = code_text_info.find_info(top).make_count_dict()
         self.code_patterns = make_words_masks(
-            make_words_list(self.code_count_dict[WORDS], top))  # encrypted words masks
+            make_words_list(
+                self.code_count_dict[WORDS],
+                top))  # encrypted words masks
         self.temp_subst = make_blank_substitution(alphabet)
         self.key = make_blank_substitution(alphabet)
 
@@ -193,8 +218,10 @@ class SubstitutionHacker:
                 continue
             if coded_mask in self.word_patterns.keys():
                 for candidate in self.word_patterns[coded_mask]:
-                    new_map = expand_substitution(new_map, coded_word, candidate)
-            self.temp_subst = intersect_substitutions(self.temp_subst, new_map, self.alphabet)
+                    new_map = expand_substitution(
+                        new_map, coded_word, candidate)
+            self.temp_subst = intersect_substitutions(
+                self.temp_subst, new_map, self.alphabet)
         result = remove_solved_letters(self.temp_subst)
         self.key = find_final_substitution(result, self.alphabet)
         return self.key
@@ -206,7 +233,9 @@ class SubstitutionHacker:
         :param encoding:
         :return:
         """
-        return code_text_from_file(code_fn, encoding, self.key, regex(self.alphabet))
+        return code_text_from_file(
+            code_fn, encoding, self.key, regex(
+                self.alphabet))
 
     def decode_stdin(self):
         """
