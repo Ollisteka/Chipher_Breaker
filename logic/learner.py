@@ -94,7 +94,12 @@ class TextInfo:
     This class stores information about current text
     """
 
-    def __init__(self, alphabet, encoding, input_filename=None, input_text=None):
+    def __init__(
+            self,
+            alphabet,
+            encoding,
+            input_filename=None,
+            input_text=None):
         try:
             # noinspection PyProtectedMember
             if isinstance(input_filename, tempfile._TemporaryFileWrapper):
