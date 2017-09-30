@@ -66,9 +66,6 @@ class CountInfo:
         :type alphabet: __Regex
         :return:
         """
-        if top_words is None:
-            top_words = 100
-
         try:
             with open(filename, "r", encoding=encoding) as f:
                 prev_data = json.loads(f.read())
