@@ -61,7 +61,7 @@ def main():
         metavar="FILENAME",
         help='file where to store right substitution')
 
-    parser.add_argument('-t', '--top', type=int, dest='top',
+    parser.add_argument('-t', '--top', type=int, dest='top', default=15000,
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
