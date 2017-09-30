@@ -50,7 +50,7 @@ def main():
         default='utf-8',
         help='choose FILE (and output file, if key -o is chosen) encoding')
 
-    parser.add_argument('-t', '--top', type=int, dest='top',
+    parser.add_argument('-t', '--top', type=int, dest='top', default=15000,
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
