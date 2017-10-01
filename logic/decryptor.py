@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import tempfile
-from copy import deepcopy
+from copy import copy
 from itertools import groupby
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -70,7 +70,7 @@ def expand_substitution(substitution, coded_word, word):
     :param word:
     :return:
     """
-    substitution = deepcopy(substitution)
+    substitution = copy(substitution)
     for i in range(len(coded_word)):
         substitution[coded_word[i]].add(word[i])
     return substitution
@@ -101,7 +101,7 @@ def remove_solved_letters(substitution):
     :param substitution:
     :return:
     """
-    answer = deepcopy(substitution)
+    answer = copy(substitution)
     loop_again = True
     while loop_again:
         loop_again = False
@@ -134,6 +134,14 @@ def find_final_substitution(substitution, alphabet):
             key[coded_letter] = list(substitution[coded_letter])[0]
         else:
             key[coded_letter] = '_'
+
+    free_keys = [letter for letter in key.keys()
+                 if key[letter] == "_"]
+    unused_letters = [letter for letter in key.keys()
+                      if letter not in key.values()]
+
+    if len(free_keys) == 1:
+        key[free_keys[0]] = unused_letters[0]
     return key
 
 
@@ -181,6 +189,7 @@ class SubstitutionHacker:
     """
     This class can hack and decode encrypted text or file
     """
+    possible_keys = []
 
     def __init__(
             self,
@@ -245,13 +254,16 @@ class SubstitutionHacker:
         """
         return code_stdin(self.key, regex(self.alphabet))
 
-    def decode_text(self, text):
+    def decode_text(self, text, key=None):
         """
         Decode given text
         :param text:
+        :param key:
         :return:
         """
-        return code(text, self.key, regex(self.alphabet))
+        if not key:
+            key = self.key
+        return code(text, key, regex(self.alphabet))
 
 
 def regex(alphabet):
