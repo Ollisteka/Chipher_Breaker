@@ -70,6 +70,7 @@ def main():
 
     if not isinstance(args.fn, list) and args.fn.name == '<stdin>':
         text = stdin_to_text()
+        sample = text[:200]
         hacker = SubstitutionHacker(
             args.alph,
             args.stat,
@@ -86,13 +87,30 @@ def main():
             code_fn=args.fn.name,
             top=args.top)
         key = hacker.hack()
+        # sample = ""
+        # with open(args.fn.name) as file:
+        #     for line in sample:
+        #         for char in line:
+        #             sample += char
+        #             if len(sample) >= 200:
+        #                 break
         decoded_text = hacker.decode_file(args.fn.name, args.encoding)
+
+    # if 0 < len([x for x in key.values() if x == "_"]) <= 3:
+    #     possible_keys = hacker.find_possible_substitution()
+    #     n = 0
+    #     for p_key in possible_keys:
+    #         print("Variant №" + str(n))
+    #         print(hacker.decode_text(sample, p_key))
+    #         n += 1
 
     if args.output:
         with open(args.output, 'w', encoding=args.encoding) as file:
             file.write(decoded_text)
     else:
         print(decoded_text)
+
+    print(key)
 
     if args.substitution:
         write_json_in_file(args.substitution, key, args.encoding)
