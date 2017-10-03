@@ -3,8 +3,9 @@
 # coding=utf-8
 import argparse
 import os
-import re
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
 from pprint import pprint
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -56,6 +57,14 @@ def main():
         help='enable debug output')
 
     parser.add_argument(
+        '-n',
+        '--num',
+        type=int,
+        dest='num',
+        default=51,
+        help='choose a quantity of iterations')
+
+    parser.add_argument(
         '-e',
         '--encoding',
         type=str,
@@ -73,7 +82,7 @@ def main():
                         e.generate_substitution(args.alph))
 
     result = {}
-    for n in range(1, 101):
+    for n in range(1, args.num):
         sample = coded_text[:n * 25]
         original_sample = original_text[:n * 25]
         hacker = SubstitutionHacker(
@@ -99,13 +108,19 @@ def main():
         write_json_in_file(args.output, result, args.encoding)
     else:
         pprint(result)
-
     print("Last variant:\n", decoded_sample)
+
+    plt.figure()
+    plt.xlabel("Text's length")
+    plt.ylabel("Success rate, %")
+    plt.scatter(list(result.keys()), list(result.values()))
+    plt.grid(True)
+    plt.show()
 
 
 def count_diff(text_one, text_two):
     """
-
+    Count a number of different symbols in two texts
     :type text_one: str
     :type text_two: str
     :return:
