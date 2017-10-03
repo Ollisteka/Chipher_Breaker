@@ -2,7 +2,6 @@
 # coding=utf-8
 import json
 import os
-import re
 import sys
 import tempfile
 from copy import copy
