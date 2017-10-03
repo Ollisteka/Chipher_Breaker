@@ -111,13 +111,7 @@ def count_diff(text_one, text_two):
     :type text_two: str
     :return:
     """
-    i = 0
-    count = 0
-    for char in text_one:
-        if char != text_two[i]:
-            count += 1
-        i += 1
-    return count
+    return len([x for x in zip(text_one,text_two) if x[0]!=x[1]])
 
 
 if __name__ == '__main__':
