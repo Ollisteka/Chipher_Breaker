@@ -206,13 +206,12 @@ class MyTestCase(unittest.TestCase):
 
     def test_decode_from_file(self):
         subst = e.generate_substitution(self.alph_en)
-        alph = re.compile('[' + self.alph_en + ']')
-        code = e.code_text_from_file(make_big_en_file(), 'utf-8', subst, alph)
+        code = e.code_text_from_file(make_big_en_file(), 'utf-8', subst)
         rev_subst = e.reverse_substitution(subst)
         with make_big_en_file() as f:
             f.seek(0)
             original = f.read().decode(ENCODING)
-        decode = e.code(code, rev_subst, alph)
+        decode = e.code(code, rev_subst)
         self.assertEqual(original, decode)
 
     def test_decoding_rus(self):
@@ -234,10 +233,9 @@ def code_decode(text, language):
     :return:
     """
     subst = e.generate_substitution(language)
-    alph = re.compile('[' + language + ']')
-    code = e.code(text, subst, alph)
+    code = e.code(text, subst)
     rev_subst = e.reverse_substitution(subst)
-    return e.code(code, rev_subst, alph)
+    return e.code(code, rev_subst)
 
 
 if __name__ == '__main__':
