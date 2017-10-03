@@ -69,13 +69,12 @@ def reverse_substitution(substitution):
     return {v: k for k, v in substitution.items()}
 
 
-def code_text_from_file(filename, encoding, substitution, alphabet):
+def code_text_from_file(filename, encoding, substitution):
     """
     Code text from file
     :param filename:
     :param encoding:
     :param substitution:
-    :type alphabet: __Regex
     :return:
     """
     # noinspection PyProtectedMember
@@ -83,39 +82,30 @@ def code_text_from_file(filename, encoding, substitution, alphabet):
         with filename as f:
             f.seek(0)
             text = f.read().decode(encoding)
-            return code(text, substitution, alphabet)
+            return code(text, substitution)
     with open(filename, 'r', encoding=encoding) as file:
-        return code(file, substitution, alphabet)
+        return code(file, substitution)
 
 
-def code_stdin(substitution, alphabet):
+def code_stdin(substitution):
     """
     Code text from stdin
     :param substitution:
-    :type alphabet: __Regex
     :return:
     """
-    return code(sys.stdin, substitution, alphabet)
+    return code(sys.stdin, substitution)
 
 
-def code(text, substitution, alphabet):
+def code(text, substitution):
     """
     The function encrypts the text, assigning each letter
     a new one from the substitution
     :type text: str or Text.IOWrapper[str]
-    :type substitution: dict
-    :type alphabet: __Regex
+    :type substitution: dict of (str, str)
     :return:
     """
-    result = ''
-    for line in text:
-        for char in line:
-            if alphabet.match(char) is not None:
-                letter = char.lower()
-                if letter == char:  # original letter was in lower case
-                    result += substitution[letter]
-                else:
-                    result += substitution[letter].upper()
-            else:
-                result += char
+    result = text[:]
+    for (coded_letter, decoded_letter) in substitution.items():
+        text.replace(coded_letter, decoded_letter)
+        text.replace(coded_letter.upper(), decoded_letter.upper())
     return result
