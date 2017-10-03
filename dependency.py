@@ -70,8 +70,7 @@ def main():
     with open(args.fn.name) as file:
         original_text = file.read()
     coded_text = e.code(original_text,
-                        e.generate_substitution(args.alph),
-                        re.compile('[' + args.alph + ']'))
+                        e.generate_substitution(args.alph))
 
     result = {}
     for n in range(1, 101):
@@ -111,7 +110,7 @@ def count_diff(text_one, text_two):
     :type text_two: str
     :return:
     """
-    return len([x for x in zip(text_one,text_two) if x[0]!=x[1]])
+    return len([x for x in zip(text_one,text_two) if x[0] != x[1]])
 
 
 if __name__ == '__main__':

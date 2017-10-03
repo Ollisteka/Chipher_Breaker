@@ -89,11 +89,10 @@ def main():
     else:
         subst = generate_substitution(args.alph)
 
-    alph = re.compile('[' + args.alph + ']')
     if not args.fn:
-        result = code_stdin(subst, alph)
+        result = code_stdin(subst)
     else:
-        result = code_text_from_file(args.fn.name, args.encoding, subst, alph)
+        result = code_text_from_file(args.fn.name, args.encoding, subst)
 
     # print("Saving substitution to '{}{}'...".format(os.path.sep, SUBST_FILE))
     if args.generate:

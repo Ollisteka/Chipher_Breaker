@@ -105,10 +105,7 @@ def stdin_to_text():
     Covert stdin text to a normal string, so it could be used many times.
     :return:
     """
-    result = ''
-    for line in sys.stdin:
-        result += line
-    return result
+    return str.join("", sys.stdin)
 
 
 if __name__ == '__main__':
