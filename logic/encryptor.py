@@ -84,7 +84,7 @@ def code_text_from_file(filename, encoding, substitution):
             text = f.read().decode(encoding)
             return code(text, substitution)
     with open(filename, 'r', encoding=encoding) as file:
-        return code(file, substitution)
+        return code(file.read(), substitution)
 
 
 def code_stdin(substitution):
@@ -101,11 +101,10 @@ def code(text, substitution):
     The function encrypts the text, assigning each letter
     a new one from the substitution
     :type text: str or Text.IOWrapper[str]
-    :type substitution: dict of (str, str)
+    :type substitution: dict
     :return:
     """
-    result = text[:]
-    for (coded_letter, decoded_letter) in substitution.items():
-        text.replace(coded_letter, decoded_letter)
-        text.replace(coded_letter.upper(), decoded_letter.upper())
-    return result
+    upper_letters = dict(zip([x.upper() for x in substitution.keys()],
+                             [x.upper() for x in substitution.values()]))
+    _tab = str.maketrans(dict(substitution, **upper_letters))
+    return text.translate(_tab)
