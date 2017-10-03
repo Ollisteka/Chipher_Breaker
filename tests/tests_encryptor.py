@@ -224,6 +224,12 @@ class MyTestCase(unittest.TestCase):
     def test_decoding_en(self):
         self.assertEqual(self.text_en, code_decode(self.text_en, self.alph_en))
 
+    def test_reverse(self):
+        subst = e.generate_substitution(self.alph_en)
+        rev_subst = e.reverse_substitution(subst)
+        double_rev = e.reverse_substitution(rev_subst)
+        self.assertDictEqual(subst, double_rev)
+
 
 def code_decode(text, language):
     """
