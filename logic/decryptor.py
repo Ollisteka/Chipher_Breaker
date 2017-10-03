@@ -233,6 +233,7 @@ class SubstitutionHacker:
             self.temp_subst = intersect_substitutions(
                 self.temp_subst, new_map, self.alphabet)
         result = remove_solved_letters(self.temp_subst)
+        self.key = find_final_substitution(result, self.alphabet)
         return self.key
 
     def decode_file(self, code_fn, encoding):
