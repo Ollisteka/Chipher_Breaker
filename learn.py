@@ -54,7 +54,7 @@ def main():
                         help='choose, how many popular words will be stored')
 
     args = parser.parse_args()
-    if not isinstance(args.fn, list) and args.fn.name == '<stdin>':
+    if not isinstance(args.fn, list):
         handle_one_object(args, text=sys.stdin)
     elif len(args.fn) == 1:
         if os.path.isdir(args.fn[0]):

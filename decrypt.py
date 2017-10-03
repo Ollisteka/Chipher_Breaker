@@ -36,7 +36,6 @@ def main():
         'fn',
         metavar='FILE',
         nargs='?',
-        type=argparse.FileType('r'),
         default=sys.stdin,
         help='name of the file with text')
     parser.add_argument(
@@ -68,7 +67,7 @@ def main():
     if not args.alph:
         sys.exit("Error: alphabet must be specified")
 
-    if not isinstance(args.fn, list) and args.fn.name == '<stdin>':
+    if not isinstance(args.fn, list):
         text = stdin_to_text()
         hacker = SubstitutionHacker(
             args.alph,
@@ -83,10 +82,10 @@ def main():
             args.alph,
             args.stat,
             args.encoding,
-            code_fn=args.fn.name,
+            code_fn=args.fn,
             top=args.top)
         key = hacker.hack()
-        decoded_text = hacker.decode_file(args.fn.name, args.encoding)
+        decoded_text = hacker.decode_file(args.fn, args.encoding)
 
     if args.output:
         with open(args.output, 'w', encoding=args.encoding) as file:

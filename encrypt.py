@@ -2,7 +2,6 @@
 # coding=utf-8
 import argparse
 import os
-import re
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -19,8 +18,7 @@ def main():
             os.path.basename(
                 sys.argv[0])),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description='Encode text using substitution cipher',
-        epilog="Made by Zhukova Olga, FT-202")
+        description='Encode text using substitution cipher')
 
     subst_group = parser.add_mutually_exclusive_group()
 
@@ -55,7 +53,6 @@ def main():
         'fn',
         metavar='FILE',
         nargs='?',
-        type=argparse.FileType('r'),
         default=None,
         help='name of the file with text')
     parser.add_argument(
@@ -92,7 +89,7 @@ def main():
     if not args.fn:
         result = code_stdin(subst)
     else:
-        result = code_text_from_file(args.fn.name, args.encoding, subst)
+        result = code_text_from_file(args.fn, args.encoding, subst)
 
     # print("Saving substitution to '{}{}'...".format(os.path.sep, SUBST_FILE))
     if args.generate:
