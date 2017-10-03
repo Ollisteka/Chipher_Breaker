@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import unittest
-import re
-import sys
 import os
+import sys
 import tempfile
+import unittest
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))

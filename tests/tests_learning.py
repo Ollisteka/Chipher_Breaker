@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import unittest
-import sys
 import os
+import sys
 import tempfile
+import unittest
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
@@ -465,11 +465,11 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         for file in [
-                self.first_file,
-                self.second_file,
-                self.ngr_file,
-                self.big_en_file,
-                self.big_rus_file]:
+            self.first_file,
+            self.second_file,
+            self.ngr_file,
+            self.big_en_file,
+            self.big_rus_file]:
             file.close()
             os.unlink(file.name)
         try:

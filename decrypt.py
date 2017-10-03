@@ -93,8 +93,6 @@ def main():
     else:
         print(decoded_text)
 
-    print(key)
-
     if args.substitution:
         write_json_in_file(args.substitution, key, args.encoding)
 

@@ -4,8 +4,9 @@
 import argparse
 import os
 import sys
-import matplotlib.pyplot as plt
 from pprint import pprint
+
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
@@ -18,8 +19,7 @@ import logic.encryptor as e
 def main():
     parser = argparse.ArgumentParser(
         usage='{} [OPTIONS] ALPHABET STAT FILE'.format(
-            os.path.basename(
-                sys.argv[0])),
+            os.path.basename(sys.argv[0])),
         description='count the percentage of correctly guessed letters')
 
     parser.add_argument(
@@ -124,7 +124,7 @@ def count_diff(text_one, text_two):
     :type text_two: str
     :return:
     """
-    return len([x for x in zip(text_one,text_two) if x[0] != x[1]])
+    return len([x for x in zip(text_one, text_two) if x[0] != x[1]])
 
 
 if __name__ == '__main__':
