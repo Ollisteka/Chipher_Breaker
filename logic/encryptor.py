@@ -93,7 +93,7 @@ def code_stdin(substitution):
     :param substitution:
     :return:
     """
-    return code(sys.stdin, substitution)
+    return code(str.join("", sys.stdin), substitution)
 
 
 def code(text, substitution):
