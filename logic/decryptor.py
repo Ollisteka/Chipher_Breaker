@@ -233,7 +233,6 @@ class SubstitutionHacker:
             self.temp_subst = intersect_substitutions(
                 self.temp_subst, new_map, self.alphabet)
         result = remove_solved_letters(self.temp_subst)
-        self.key = find_final_substitution(result, self.alphabet)
         return self.key
 
     def decode_file(self, code_fn, encoding):
@@ -243,16 +242,14 @@ class SubstitutionHacker:
         :param encoding:
         :return:
         """
-        return code_text_from_file(
-            code_fn, encoding, self.key, regex(
-                self.alphabet))
+        return code_text_from_file(code_fn, encoding, self.key)
 
     def decode_stdin(self):
         """
         Decode text from stdin
         :return:
         """
-        return code_stdin(self.key, regex(self.alphabet))
+        return code_stdin(self.key)
 
     def decode_text(self, text, key=None):
         """
@@ -263,13 +260,4 @@ class SubstitutionHacker:
         """
         if not key:
             key = self.key
-        return code(text, key, regex(self.alphabet))
-
-
-def regex(alphabet):
-    """
-    Converts string of alphabet to regular expression of right form.
-    :param alphabet:
-    :return:
-    """
-    return re.compile('[' + alphabet + ']')
+        return code(text, key)
