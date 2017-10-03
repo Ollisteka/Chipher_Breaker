@@ -309,10 +309,6 @@ class MyTestCase(unittest.TestCase):
         self.assertDictEqual(subst, d.expand_substitution(
             d.make_blank_substitution("A-Za-z"), coded, word))
 
-    def test_regex(self):
-        regex = re.compile('[A-Za-z]')
-        self.assertEqual(d.regex("A-Za-z"), regex)
-
     def test_process_stat(self):
         stat = b"""{"words": {"hello": 1, "my": 1, "friend": 1, "no": 1}}"""
         temp = make_tmp(stat)
