@@ -305,9 +305,8 @@ class MyTestCase(unittest.TestCase):
     def test_process_stat(self):
         stat = b"""{"words": {"hello": 1, "my": 1, "friend": 1, "no": 1}}"""
         temp = make_tmp(stat)
-        processed = d.process_statistic(temp, 'utf-8')
-        expected = {'01223': ["hello"], '01': ['my', 'no'], '012345': [
-            'friend']}
+        processed = d.load_statistic(temp, 'utf-8')
+        expected = {"words": {"hello": 1, "my": 1, "friend": 1, "no": 1}}
         self.assertDictEqual(expected, processed)
 
 

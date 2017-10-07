@@ -167,9 +167,9 @@ def make_words_list(words, count=100):
     return result
 
 
-def process_statistic(filename, encoding):
+def load_statistic(filename, encoding):
     """
-    Make masks for non encrypted words, stored in some file
+    Load json statistics
     :param filename:
     :param encoding:
     :return:
@@ -201,7 +201,7 @@ class SubstitutionHacker:
             code_text=None,
             top=15000):
         self.alphabet = alphabet
-        self.original_count_dict = process_statistic(stat_fn, encoding)
+        self.original_count_dict = load_statistic(stat_fn, encoding)
         self.word_patterns = make_words_masks(
             self.original_count_dict[WORDS].keys())
         # original non encrypted words masks
