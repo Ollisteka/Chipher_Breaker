@@ -63,6 +63,13 @@ def main():
     parser.add_argument('-t', '--top', type=int, dest='top', default=15000,
                         help='choose, how many popular words will be stored')
 
+    parser.add_argument('-p', '--possible', nargs='?', const=10,
+                        dest='num', type=int,
+                        help='if the usual decryption process has left some '
+                             'letters empty - try to guess them, '
+                             'using another method, and then choose the best'
+                             ' one')
+
     args = parser.parse_args()
     if not args.alph:
         sys.exit("Error: alphabet must be specified")
@@ -76,7 +83,9 @@ def main():
             code_text=text,
             top=args.top)
         key = hacker.hack()
-        decoded_text = hacker.decode_text(text)
+        if "_" in key.values() and args.num:
+            key = choose_best_key(hacker, args)
+        decoded_text = hacker.decode_text(text, key)
     else:
         hacker = SubstitutionHacker(
             args.alph,
@@ -85,7 +94,9 @@ def main():
             code_fn=args.fn,
             top=args.top)
         key = hacker.hack()
-        decoded_text = hacker.decode_file(args.fn, args.encoding)
+        if "_" in key.values() and args.num:
+            key = choose_best_key(hacker, args)
+        decoded_text = hacker.decode_file(args.fn, args.encoding, key)
 
     if args.output:
         with open(args.output, 'w', encoding=args.encoding) as file:
@@ -95,6 +106,41 @@ def main():
 
     if args.substitution:
         write_json_in_file(args.substitution, key, args.encoding)
+
+
+def choose_best_key(hacker, args):
+    """
+    Try to guess empty letters, let the user decide, which one fits best
+    :param hacker:
+    :param args:
+    :return:
+    """
+    possibilities = ordered_dict_to_list(
+        hacker.find_possible_substitution(), args.num)
+    count = 0
+    for subst in possibilities:
+        print("Variant " + str(count) + ":")
+        print(hacker.decode_file(args.fn, args.encoding, subst)[:300])
+        print("========")
+        count += 1
+    return possibilities[int(input("Please, choose best variant:\n"))]
+
+
+def ordered_dict_to_list(ord_dict, count):
+    """
+    Convert ordered dictionary to list
+    :param ord_dict:
+    :param count:
+    :return:
+    """
+    i = 0
+    result = []
+    for key in ord_dict:
+        if i == count:
+            return result
+        result.append(ord_dict[key])
+        i += 1
+    return result
 
 
 def stdin_to_text():

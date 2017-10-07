@@ -3,9 +3,11 @@
 import json
 import os
 import sys
+import random
 import tempfile
 from copy import copy
 from itertools import groupby
+from collections import OrderedDict
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
@@ -181,7 +183,7 @@ def process_statistic(filename, encoding):
     else:
         with open(filename, "r", encoding=encoding) as file:
             sample = json.loads(file.read())
-    return make_words_masks(sample[WORDS].keys())
+    return sample
 
 
 class SubstitutionHacker:
@@ -199,12 +201,19 @@ class SubstitutionHacker:
             code_text=None,
             top=15000):
         self.alphabet = alphabet
-        self.word_patterns = process_statistic(
-            stat_fn, encoding)  # original non encrypted words masks
+        self.original_count_dict = process_statistic(stat_fn, encoding)
+        self.word_patterns = make_words_masks(
+            self.original_count_dict[WORDS].keys())
+        # original non encrypted words masks
         if code_fn:
+            self.__code_filename = code_fn
+            self.__code_text = None
+            self.encoding = encoding
             code_text_info = TextInfo(
                 alphabet, encoding, input_filename=code_fn)
         elif code_text:
+            self.__code_filename = None
+            self.__code_text = code_text
             code_text_info = TextInfo(alphabet, encoding, input_text=code_text)
         else:
             raise Exception("You must specify file name or the text itself")
@@ -213,8 +222,9 @@ class SubstitutionHacker:
             make_words_list(
                 self.code_count_dict[WORDS],
                 top))  # encrypted words masks
-        self.temp_subst = make_blank_substitution(alphabet)
+        self.__temp_subst = make_blank_substitution(alphabet)
         self.key = make_blank_substitution(alphabet)
+        self.__example_quadgrams = self.__count_standard_quadgrams()
 
     def hack(self):
         """
@@ -229,20 +239,118 @@ class SubstitutionHacker:
                 for candidate in self.word_patterns[coded_mask]:
                     new_map = expand_substitution(
                         new_map, coded_word, candidate)
-            self.temp_subst = intersect_substitutions(
-                self.temp_subst, new_map, self.alphabet)
-        result = remove_solved_letters(self.temp_subst)
+            self.__temp_subst = intersect_substitutions(
+                self.__temp_subst, new_map, self.alphabet)
+        result = remove_solved_letters(self.__temp_subst)
         self.key = find_final_substitution(result, self.alphabet)
         return self.key
 
-    def decode_file(self, code_fn, encoding):
+    def find_possible_substitution(self):
+        """
+        Returns an ordered dict of possible substitutions, from best to worst
+        :return:
+        """
+        from math import factorial
+        free_keys = [letter for letter in self.key.keys() if self.key[
+            letter] == "_"]
+        used_substs = []
+        result = {}
+        max_score = -9999999999
+        i = 0
+        while i < 20:
+            i += 1
+            parent = self.__generate_key()
+            decode = self.__decode(parent)
+            parent_score = self.__count_score(decode)
+            count = 0
+            while count < 500:
+                if len(used_substs) == factorial(len(free_keys)):
+                    break
+                child = copy(parent)
+                while child in used_substs or count == 0:
+                    a = random.choice(free_keys)
+                    b = random.choice(free_keys)
+                    while a == b:
+                        b = random.choice(free_keys)
+                    count += 1
+                used_substs.append(child)
+                child[a], child[b] = child[b], child[a]
+                decode = self.__decode(parent)
+                child_score = self.__count_score(decode)
+                count += 1
+                if child_score > parent_score:
+                    parent_score = child_score
+                    parent = copy(child)
+                    count = 0
+            if parent_score > max_score:
+                max_score = parent_score
+                result[max_score] = copy(parent)
+        return OrderedDict(sorted(result.items(), reverse=True))
+
+    def __count_standard_quadgrams(self):
+        """
+        Count the probability of quadgram appearance in a real non coded text
+        :return:
+        """
+        from math import log10
+        quadgrams = copy(self.original_count_dict[NGRAMMS]['4'])
+        self.__N = sum(quadgrams.values())
+        for key in quadgrams.keys():
+            quadgrams[key] = log10(float(quadgrams[key]) / self.__N)
+        self.__floor = log10(0.01 / self.__N)
+        return quadgrams
+
+    def __count_score(self, coded_text):
+        score = 0
+        coded_quadgrams = TextInfo(self.alphabet, self.encoding,
+                                   input_text=coded_text).find_info(
+            15000).make_ngramms_dict()['4']
+        for quadgram in coded_quadgrams:
+            if quadgram in self.__example_quadgrams.keys():
+                score += self.__example_quadgrams[quadgram]
+            else:
+                score += self.__floor
+        return score
+
+    def __decode(self, key):
+        """
+        Returns text, decoded with given key
+        :param key:
+        :return:
+        """
+        if self.__code_filename:
+            decode = self.decode_file(self.__code_filename, self.encoding, key)
+        else:
+            decode = self.decode_text(self.__code_text, key)
+        return decode
+
+    def __generate_key(self):
+        """
+        Find a random possible substitution, based on the unused letters
+        :return:
+        """
+        unused_letters = [letter for letter in self.key.keys() if letter not
+                          in self.key.values()]
+        free_keys = [letter for letter in self.key.keys() if self.key[
+            letter] == "_"]
+        temp = copy(self.key)
+        for key in free_keys:
+            element = random.choice(unused_letters)
+            temp[key] = element
+            unused_letters.remove(element)
+        return temp
+
+    def decode_file(self, code_fn, encoding='utf-8', key=None):
         """
         Decode text from file
+        :param key:
         :param code_fn:
         :param encoding:
         :return:
         """
-        return code_text_from_file(code_fn, encoding, self.key)
+        if not key:
+            key = self.key
+        return code_text_from_file(code_fn, encoding, key)
 
     def decode_stdin(self):
         """
