@@ -58,9 +58,14 @@ def main():
         handle_one_object(args, text=sys.stdin)
     elif len(args.fn) == 1:
         if os.path.isdir(args.fn[0]):
+            if not args.output:
+                print(
+                    "Error: an output file must be specified, to let a folder "
+                    "to be handled")
+                sys.exit(2)
             origin_path = os.path.join(os.getcwd(), args.output)
             os.chdir(args.fn[0])
-            handle_many_files(args, os.listdir(args.fn[0]))
+            handle_many_files(args, os.listdir(os.getcwd()))
             os.replace(os.path.join(os.getcwd(), args.output), origin_path)
         else:
             handle_one_object(args, file_name=args.fn[0])
