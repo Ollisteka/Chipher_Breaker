@@ -24,112 +24,23 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_blank_letter_mapping(self):
         self.assertDictEqual(d.make_blank_substitution("A-Za-z"),
-                             {'a': set(),
-                              'b': set(),
-                              'c': set(),
-                              'd': set(),
-                              'e': set(),
-                              'f': set(),
-                              'g': set(),
-                              'h': set(),
-                              'i': set(),
-                              'j': set(),
-                              'k': set(),
-                              'l': set(),
-                              'm': set(),
-                              'n': set(),
-                              'o': set(),
-                              'p': set(),
-                              'q': set(),
-                              'r': set(),
-                              's': set(),
-                              't': set(),
-                              'u': set(),
-                              'v': set(),
-                              'w': set(),
-                              'x': set(),
-                              'y': set(),
-                              'z': set()})
+                             make_dict_of_smth(make_alphabet_keys("A-Za-z"),
+                                               set()))
 
     def test_intersect(self):
-        subst_one = {'a': {'b', 'c'},
-                     'b': {'a'},
-                     'c': set(),
-                     'd': {'x'},
-                     'e': set(),
-                     'f': set(),
-                     'g': set(),
-                     'h': set(),
-                     'i': set(),
-                     'j': set(),
-                     'k': set(),
-                     'l': set(),
-                     'm': set(),
-                     'n': set(),
-                     'o': set(),
-                     'p': set(),
-                     'q': set(),
-                     'r': set(),
-                     's': set(),
-                     't': set(),
-                     'u': set(),
-                     'v': set(),
-                     'w': set(),
-                     'x': set(),
-                     'y': set(),
-                     'z': set()}
-        subst_two = {'a': {'c', 'd'},
-                     'b': {'e'},
-                     'c': {'z'},
-                     'd': set(),
-                     'e': set(),
-                     'f': set(),
-                     'g': set(),
-                     'h': set(),
-                     'i': set(),
-                     'j': set(),
-                     'k': set(),
-                     'l': set(),
-                     'm': set(),
-                     'n': set(),
-                     'o': set(),
-                     'p': set(),
-                     'q': set(),
-                     'r': set(),
-                     's': set(),
-                     't': set(),
-                     'u': set(),
-                     'v': set(),
-                     'w': set(),
-                     'x': set(),
-                     'y': set(),
-                     'z': set()}
-        expected_result = {'a': {'c'},
-                           'b': set(),
-                           'c': {'z'},
-                           'd': {'x'},
-                           'e': set(),
-                           'f': set(),
-                           'g': set(),
-                           'h': set(),
-                           'i': set(),
-                           'j': set(),
-                           'k': set(),
-                           'l': set(),
-                           'm': set(),
-                           'n': set(),
-                           'o': set(),
-                           'p': set(),
-                           'q': set(),
-                           'r': set(),
-                           's': set(),
-                           't': set(),
-                           'u': set(),
-                           'v': set(),
-                           'w': set(),
-                           'x': set(),
-                           'y': set(),
-                           'z': set()}
+        subst_one = make_dict_of_smth(make_alphabet_keys("A-Za-z"), set())
+        subst_one['a'] = {'b', 'c'}
+        subst_one['b'] = {'a'}
+        subst_one['d'] = {'x'}
+        subst_two = make_dict_of_smth(make_alphabet_keys("A-Za-z"), set())
+        subst_two['a'] = {'c', 'd'}
+        subst_two['b'] = {'e'}
+        subst_two['c'] = {'z'}
+        expected_result = make_dict_of_smth(make_alphabet_keys("A-Za-z"),
+                                            set())
+        expected_result['a'] = {'c'}
+        expected_result['c'] = {'z'}
+        expected_result['d'] = {'x'}
         self.assertDictEqual(
             expected_result,
             d.intersect_substitutions(
@@ -138,115 +49,28 @@ class MyTestCase(unittest.TestCase):
                 "A-Za-z"))
 
     def test_remove_solved_letters(self):
-        subst_one = {'a': {'a', 'b'},
-                     'b': {'a'},
-                     'c': set(),
-                     'd': {'x'},
-                     'e': set(),
-                     'f': set(),
-                     'g': set(),
-                     'h': set(),
-                     'i': set(),
-                     'j': set(),
-                     'k': set(),
-                     'l': set(),
-                     'm': set(),
-                     'n': set(),
-                     'o': set(),
-                     'p': set(),
-                     'q': set(),
-                     'r': set(),
-                     's': set(),
-                     't': set(),
-                     'u': set(),
-                     'v': set(),
-                     'w': set(),
-                     'x': set(),
-                     'y': set(),
-                     'z': set()}
-        expected_result = {'a': {'b'},
-                           'b': {'a'},
-                           'c': set(),
-                           'd': {'x'},
-                           'e': set(),
-                           'f': set(),
-                           'g': set(),
-                           'h': set(),
-                           'i': set(),
-                           'j': set(),
-                           'k': set(),
-                           'l': set(),
-                           'm': set(),
-                           'n': set(),
-                           'o': set(),
-                           'p': set(),
-                           'q': set(),
-                           'r': set(),
-                           's': set(),
-                           't': set(),
-                           'u': set(),
-                           'v': set(),
-                           'w': set(),
-                           'x': set(),
-                           'y': set(),
-                           'z': set()}
+        subst_one = make_dict_of_smth(make_alphabet_keys("A-Za-z"), set())
+        subst_one['a'] = {'a', 'b'}
+        subst_one['b'] = {'a'}
+        subst_one['d'] = {'x'}
+
+        expected_result = make_dict_of_smth(make_alphabet_keys("A-Za-z"),
+                                            set())
+        expected_result['a'] = {'b'}
+        expected_result['b'] = {'a'}
+        expected_result['d'] = {'x'}
         self.assertDictEqual(
             expected_result,
             d.remove_solved_letters(subst_one))
 
     def test_find_final(self):
-        subst = {'a': {'c', 'd'},
-                 'b': {'e'},
-                 'c': {'z'},
-                 'd': set(),
-                 'e': set(),
-                 'f': set(),
-                 'g': set(),
-                 'h': set(),
-                 'i': set(),
-                 'j': set(),
-                 'k': set(),
-                 'l': set(),
-                 'm': set(),
-                 'n': set(),
-                 'o': set(),
-                 'p': set(),
-                 'q': set(),
-                 'r': set(),
-                 's': set(),
-                 't': set(),
-                 'u': set(),
-                 'v': set(),
-                 'w': set(),
-                 'x': set(),
-                 'y': set(),
-                 'z': set()}
-        expected_result = {'a': '_',
-                           'b': 'e',
-                           'c': 'z',
-                           'd': '_',
-                           'e': '_',
-                           'f': '_',
-                           'g': '_',
-                           'h': '_',
-                           'i': '_',
-                           'j': '_',
-                           'k': '_',
-                           'l': '_',
-                           'm': '_',
-                           'n': '_',
-                           'o': '_',
-                           'p': '_',
-                           'q': '_',
-                           'r': '_',
-                           's': '_',
-                           't': '_',
-                           'u': '_',
-                           'v': '_',
-                           'w': '_',
-                           'x': '_',
-                           'y': '_',
-                           'z': '_'}
+        subst = make_dict_of_smth(make_alphabet_keys("A-Za-z"), set())
+        subst['a'] = {'c', 'd'}
+        subst['b'] = {'e'}
+        subst['c'] = {'z'}
+        expected_result = make_dict_of_smth(make_alphabet_keys("A-Za-z"), "_")
+        expected_result['b'] = 'e'
+        expected_result['c'] = 'z'
         self.assertDictEqual(
             expected_result,
             d.find_final_substitution(
@@ -273,32 +97,10 @@ class MyTestCase(unittest.TestCase):
     def test_expand_substitution(self):
         word = "abc"
         coded = "xyz"
-        subst = {'a': set(),
-                 'b': set(),
-                 'c': set(),
-                 'd': set(),
-                 'e': set(),
-                 'f': set(),
-                 'g': set(),
-                 'h': set(),
-                 'i': set(),
-                 'j': set(),
-                 'k': set(),
-                 'l': set(),
-                 'm': set(),
-                 'n': set(),
-                 'o': set(),
-                 'p': set(),
-                 'q': set(),
-                 'r': set(),
-                 's': set(),
-                 't': set(),
-                 'u': set(),
-                 'v': set(),
-                 'w': set(),
-                 'x': {'a'},
-                 'y': {'b'},
-                 'z': {'c'}}
+        subst = make_dict_of_smth(make_alphabet_keys("A-Za-z"), set())
+        subst['x'] = {'a'}
+        subst['y'] = {'b'}
+        subst['z'] = {'c'}
         self.assertDictEqual(subst, d.expand_substitution(
             d.make_blank_substitution("A-Za-z"), coded, word))
 
@@ -308,6 +110,25 @@ class MyTestCase(unittest.TestCase):
         processed = d.load_statistic(temp, 'utf-8')
         expected = {"words": {"hello": 1, "my": 1, "friend": 1, "no": 1}}
         self.assertDictEqual(expected, processed)
+
+
+def make_alphabet_keys(alphabet):
+    """
+    Make list of alphabet letters
+    :param alphabet:
+    :return:
+    """
+    return d.make_blank_substitution(alphabet).keys()
+
+
+def make_dict_of_smth(keys, smth):
+    """
+    Make dict of something
+    :param smth:
+    :param keys:
+    :return:
+    """
+    return {key: smth for key in keys}
 
 
 def make_tmp(text):
