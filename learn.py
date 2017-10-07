@@ -4,15 +4,11 @@ import argparse
 import os
 import sys
 from pprint import pprint
+from logic.learner import TextInfo, write_json_in_file
 
 LETTERS = "letters"
 WORDS = "words"
 NGRAMMS = "ngramms"
-
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             os.path.pardir))
-
-from logic.learner import TextInfo, write_json_in_file
 
 
 def main():

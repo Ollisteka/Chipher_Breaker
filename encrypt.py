@@ -3,10 +3,6 @@
 import argparse
 import os
 import sys
-
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             os.path.pardir))
-
 from logic.learner import write_json_in_file
 from logic.encryptor import read_json_file, reverse_substitution, \
     generate_substitution, code_stdin, code_text_from_file

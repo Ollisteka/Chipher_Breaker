@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
-
-import os
-import sys
 import tempfile
 import unittest
-
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             os.path.pardir))
-
 import logic.encryptor as e
 
 ENCODING = "utf-8"

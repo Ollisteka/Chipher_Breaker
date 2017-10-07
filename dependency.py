@@ -5,15 +5,10 @@ import argparse
 import os
 import sys
 from pprint import pprint
-
-import matplotlib.pyplot as plt
-
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             os.path.pardir))
-
 from logic.learner import write_json_in_file
 from logic.decryptor import SubstitutionHacker
 import logic.encryptor as e
+import matplotlib.pyplot as plt
 
 
 def main():
