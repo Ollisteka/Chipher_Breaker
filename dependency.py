@@ -114,6 +114,7 @@ def main():
     plt.ylabel("Success rate, %")
     plt.scatter(list(result.keys()), list(result.values()))
     plt.grid(True)
+    plt.savefig("dependency_chart.png")
     plt.show()
 
 
